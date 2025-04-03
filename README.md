@@ -15,6 +15,13 @@ A secure and modern password manager built with React and Node.js, featuring a b
 - ⚡ Fast and efficient performance
 - 🔒 JWT authentication
 
+## Screenshots
+
+![Alt text](Preview/Screenshot 2025-04-03 at 7.52.17 PM.png)
+
+![Alt text](Preview/Screenshot 2025-04-03 at 7.52.52 PM.png)
+
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
