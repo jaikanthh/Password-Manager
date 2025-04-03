@@ -47,7 +47,7 @@ const Signup = () => {
         password: formData.password ? '***' : undefined
       });
       
-      const response = await axios.post('http://localhost:50011/api/auth/signup', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/signup`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -61,9 +61,9 @@ const Signup = () => {
       console.log('Registration response:', response.data);
       
       if (response.data && response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        toast.success('Account created successfully!');
-        navigate('/dashboard');
+      localStorage.setItem('token', response.data.token);
+      toast.success('Account created successfully!');
+      navigate('/dashboard');
       } else {
         toast.error('Invalid response from server');
         console.error('Invalid response:', response.data);

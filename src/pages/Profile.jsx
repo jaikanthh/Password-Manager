@@ -220,6 +220,9 @@ const Profile = () => {
                 color: theme.palette.mode === 'dark' 
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.6)',
+                '&.Mui-focused, &.MuiFormLabel-filled': {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                }
               },
               '& .MuiOutlinedInput-input': {
                 color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -274,6 +277,9 @@ const Profile = () => {
                 color: theme.palette.mode === 'dark' 
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.6)',
+                '&.Mui-focused, &.MuiFormLabel-filled': {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                }
               },
               '& .MuiOutlinedInput-input': {
                 color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -341,6 +347,9 @@ const Profile = () => {
                 color: theme.palette.mode === 'dark' 
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.6)',
+                '&.Mui-focused, &.MuiFormLabel-filled': {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                }
               },
               '& .MuiOutlinedInput-input': {
                 color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -394,6 +403,9 @@ const Profile = () => {
                 color: theme.palette.mode === 'dark' 
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.6)',
+                '&.Mui-focused, &.MuiFormLabel-filled': {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                }
               },
               '& .MuiOutlinedInput-input': {
                 color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -447,6 +459,9 @@ const Profile = () => {
                 color: theme.palette.mode === 'dark' 
                   ? 'rgba(255, 255, 255, 0.7)'
                   : 'rgba(0, 0, 0, 0.6)',
+                '&.Mui-focused, &.MuiFormLabel-filled': {
+                  transform: 'translate(14px, -9px) scale(0.75)',
+                }
               },
               '& .MuiOutlinedInput-input': {
                 color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',

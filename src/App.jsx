@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,11 +10,25 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
-import { Box } from '@mui/material';
+import Layout from './components/Layout';
 import Profile from './pages/Profile';
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    console.log('Initial darkMode from localStorage:', savedMode);
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+
+  useEffect(() => {
+    console.log('App component - darkMode changed:', darkMode);
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  const handleThemeChange = (newMode) => {
+    console.log('Theme change requested:', newMode);
+    setDarkMode(newMode);
+  };
 
   const theme = createTheme({
     palette: {
@@ -99,59 +113,31 @@ function App() {
         pauseOnHover
         theme={darkMode ? 'dark' : 'light'}
       />
-      <Box
-        sx={{
-          minHeight: '100vh',
-          width: '100vw',
-          background: getGradientBackground(),
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          overflowY: 'auto',
-          transition: 'background 0.3s ease-in-out',
-        }}
-      >
-        <Router>
-          <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '100vh',
-              py: { xs: 8, sm: 10, md: 12 },
-              px: { xs: 1, sm: 2, md: 4 },
-            }}
-          >
-            <Box
-              sx={{
-                width: '100%',
-                maxWidth: { xs: '100%', sm: '90%', md: '1200px' },
-                mx: 'auto',
-              }}
-            >
-              <Routes>
-                <Route path="/" element={<Welcome darkMode={darkMode} setDarkMode={setDarkMode} />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route
-                  path="/dashboard"
-                  element={
-                    <PrivateRoute>
-                      <Dashboard darkMode={darkMode} />
-                    </PrivateRoute>
-                  }
-                />
-                <Route path="/profile" element={
-                  <PrivateRoute>
-                    <Profile />
-                  </PrivateRoute>
-                } />
-              </Routes>
-            </Box>
-          </Box>
-        </Router>
-      </Box>
+      <Router>
+        <Layout darkMode={darkMode} setDarkMode={handleThemeChange}>
+          <Routes>
+            <Route path="/" element={<Welcome darkMode={darkMode} setDarkMode={handleThemeChange} />} />
+            <Route path="/login" element={<Login darkMode={darkMode} setDarkMode={handleThemeChange} />} />
+            <Route path="/signup" element={<Signup darkMode={darkMode} setDarkMode={handleThemeChange} />} />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard darkMode={darkMode} setDarkMode={handleThemeChange} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile darkMode={darkMode} setDarkMode={handleThemeChange} />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Layout>
+      </Router>
     </ThemeProvider>
   );
 }

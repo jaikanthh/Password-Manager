@@ -323,6 +323,17 @@ const Dashboard = () => {
                       border: 'none',
                     },
                   },
+                  '& .MuiInputLabel-root': {
+                    color: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.7)'
+                      : 'rgba(0, 0, 0, 0.6)',
+                    '&.Mui-focused, &.MuiFormLabel-filled': {
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                    }
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
+                  },
                 }}
                 InputProps={{
                   startAdornment: (
@@ -641,10 +652,10 @@ const Dashboard = () => {
                           >
                             {password.title}
                           </Typography>
-                        </Box>
+                    </Box>
                         <Box 
-                          sx={{ 
-                            display: 'flex', 
+                      sx={{
+                        display: 'flex',
                             gap: 0.5, 
                             flexShrink: 0, 
                             ml: 1,
@@ -658,71 +669,71 @@ const Dashboard = () => {
                                  inset -2px -2px 4px rgba(0,0,0,0.9),
                                  inset 0 3px 8px rgba(0,0,0,0.95)`
                               : 'inset 0 1px 2px rgba(0,0,0,0.1)',
-                          }}
-                        >
-                          <Tooltip title="Copy Password">
-                            <IconButton
+                      }}
+                    >
+                      <Tooltip title="Copy Password">
+                        <IconButton
                               size="small"
                               onClick={() => copyToClipboard(password.password, password.title)}
-                              sx={{ 
+                          sx={{ 
                                 color: theme.palette.mode === 'dark' ? '#60A5FA' : '#38BDF8',
                                 padding: '4px',
-                                '&:hover': {
+                            '&:hover': {
                                   background: theme.palette.mode === 'dark'
                                     ? 'rgba(96, 165, 250, 0.15)'
                                     : 'rgba(56, 189, 248, 0.15)',
-                                  transform: 'scale(1.1)',
-                                },
+                              transform: 'scale(1.1)',
+                            },
                                 transition: 'all 0.2s ease',
-                              }}
-                            >
+                          }}
+                        >
                               <CopyIcon sx={{ fontSize: '1.2rem' }} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Edit">
-                            <IconButton
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Edit">
+                        <IconButton
                               size="small"
-                              onClick={() => handleOpen(password)}
-                              sx={{ 
+                          onClick={() => handleOpen(password)}
+                          sx={{ 
                                 color: theme.palette.mode === 'dark' ? '#4ADE80' : '#22C55E',
                                 padding: '4px',
-                                '&:hover': {
+                            '&:hover': {
                                   background: theme.palette.mode === 'dark'
                                     ? 'rgba(74, 222, 128, 0.15)'
                                     : 'rgba(34, 197, 94, 0.15)',
-                                  transform: 'scale(1.1)',
-                                },
+                              transform: 'scale(1.1)',
+                            },
                                 transition: 'all 0.2s ease',
-                              }}
-                            >
+                          }}
+                        >
                               <EditIcon sx={{ fontSize: '1.2rem' }} />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete">
-                            <IconButton
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton
                               size="small"
-                              onClick={() => {
-                                if (password.id) {
-                                  handleDelete(password.id);
-                                } else {
+                          onClick={() => {
+                            if (password.id) {
+                              handleDelete(password.id);
+                            } else {
                                   toast.error('Invalid password ID', toastConfig);
-                                }
-                              }}
-                              sx={{ 
+                            }
+                          }}
+                          sx={{ 
                                 color: theme.palette.mode === 'dark' ? '#F87171' : '#EF4444',
                                 padding: '4px',
-                                '&:hover': {
+                            '&:hover': {
                                   background: theme.palette.mode === 'dark'
                                     ? 'rgba(248, 113, 113, 0.15)'
                                     : 'rgba(239, 68, 68, 0.15)',
-                                  transform: 'scale(1.1)',
-                                },
+                              transform: 'scale(1.1)',
+                            },
                                 transition: 'all 0.2s ease',
-                              }}
-                            >
+                          }}
+                        >
                               <DeleteIcon sx={{ fontSize: '1.2rem' }} />
-                            </IconButton>
-                          </Tooltip>
+                        </IconButton>
+                      </Tooltip>
                         </Box>
                       </Box>
                       <Typography
@@ -853,7 +864,12 @@ const Dashboard = () => {
                     },
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                    color: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.7)'
+                      : 'rgba(0, 0, 0, 0.6)',
+                    '&.Mui-focused, &.MuiFormLabel-filled': {
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                    }
                   },
                   '& .MuiOutlinedInput-input': {
                     color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -899,7 +915,12 @@ const Dashboard = () => {
                     },
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                    color: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.7)'
+                      : 'rgba(0, 0, 0, 0.6)',
+                    '&.Mui-focused, &.MuiFormLabel-filled': {
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                    }
                   },
                   '& .MuiOutlinedInput-input': {
                     color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -946,7 +967,12 @@ const Dashboard = () => {
                     },
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                    color: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.7)'
+                      : 'rgba(0, 0, 0, 0.6)',
+                    '&.Mui-focused, &.MuiFormLabel-filled': {
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                    }
                   },
                   '& .MuiOutlinedInput-input': {
                     color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',
@@ -991,7 +1017,12 @@ const Dashboard = () => {
                     },
                   },
                   '& .MuiInputLabel-root': {
-                    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                    color: theme.palette.mode === 'dark' 
+                      ? 'rgba(255, 255, 255, 0.7)'
+                      : 'rgba(0, 0, 0, 0.6)',
+                    '&.Mui-focused, &.MuiFormLabel-filled': {
+                      transform: 'translate(14px, -9px) scale(0.75)',
+                    }
                   },
                   '& .MuiOutlinedInput-input': {
                     color: theme.palette.mode === 'dark' ? '#fff' : 'inherit',

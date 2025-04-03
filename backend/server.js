@@ -3,6 +3,7 @@ const { sequelize, testConnection } = require('./config/database');
 const app = require('./app');
 const User = require('./models/User');
 const Password = require('./models/Password');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -112,4 +113,11 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Initialize database and start server
-initializeDatabase(); 
+initializeDatabase();
+
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.vercel.app']
+    : 'http://localhost:5173',
+  credentials: true
+})); 

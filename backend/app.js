@@ -1,18 +1,21 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const passwordRoutes = require('./routes/passwords');
 const userRoutes = require('./routes/users');
 
 const app = express();
 
-// Enhanced CORS configuration
+// CORS configuration
 app.use(cors({
-  origin: true, // Allow all origins in development
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  maxAge: 86400 // Cache preflight request for 24 hours
+  origin: [
+    'http://localhost:5173', // Local development
+    'https://*.vercel.app',  // Vercel preview deployments
+    'https://password-manager-*.vercel.app' // Production
+  ],
+  credentials: true
 }));
 
 // Body parser middleware
@@ -30,6 +33,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/passwords', passwordRoutes);
@@ -42,6 +50,11 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
+});
+
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
 module.exports = app; 

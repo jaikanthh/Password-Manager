@@ -11,6 +11,16 @@ const Welcome = ({ darkMode, setDarkMode }) => {
   const navigate = useNavigate();
   const theme = useTheme();
 
+  console.log('Welcome component - darkMode:', darkMode);
+  console.log('Welcome component - theme mode:', theme.palette.mode);
+
+  const handleThemeToggle = () => {
+    console.log('Theme toggle clicked, current darkMode:', darkMode);
+    const newMode = !darkMode;
+    console.log('Setting new darkMode value:', newMode);
+    setDarkMode(newMode);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -50,7 +60,7 @@ const Welcome = ({ darkMode, setDarkMode }) => {
       >
         <Tooltip title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
           <IconButton
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={handleThemeToggle}
             sx={{
               color: darkMode ? '#90caf9' : '#00bcd4',
               transition: 'all 0.2s ease-in-out',
