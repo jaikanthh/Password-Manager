@@ -9,7 +9,12 @@ dotenv.config();
 
 // Configure CORS - Moving this to the top before any routes
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://password-manager-frontend.vercel.app', 'https://password-manager-git-main-jaikanthh.vercel.app'],
+  origin: [
+    'http://localhost:5173',
+    'https://password-manager-f6zlg7wvo-jaikanths-projects-446ace2d.vercel.app',
+    'https://password-manager-frontend.vercel.app',
+    'https://password-manager-git-main-jaikanthh.vercel.app'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
