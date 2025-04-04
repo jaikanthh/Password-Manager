@@ -7,30 +7,60 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
-// Configure CORS - Must be before any routes
-app.use(cors({
-  origin: ['https://password-manager-f6zlg7wvo-jaikanths-projects-446ace2d.vercel.app', 'http://localhost:5173'],
+// CORS configuration with origin validation
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    
+    // Check if the origin matches our allowed patterns
+    const allowedOrigins = [
+      'http://localhost:5173',
+      /https:\/\/password-manager-.*-jaikanths-projects-446ace2d\.vercel\.app$/
+    ];
+    
+    const isAllowed = allowedOrigins.some(allowed => {
+      if (allowed instanceof RegExp) {
+        return allowed.test(origin);
+      }
+      return allowed === origin;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log('Blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  maxAge: 600 // Cache preflight request for 10 minutes
-}));
+  maxAge: 600
+};
+
+// Apply CORS configuration
+app.use(cors(corsOptions));
 
 // Handle OPTIONS preflight requests
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Debug middleware
+// Debug middleware - Log all requests including CORS details
 app.use((req, res, next) => {
   console.log('Incoming request:', {
     method: req.method,
     path: req.path,
-    body: req.body,
-    headers: req.headers
+    origin: req.headers.origin,
+    headers: req.headers,
+    body: req.method === 'POST' ? req.body : undefined
   });
   next();
 });
