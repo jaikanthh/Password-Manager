@@ -12,6 +12,7 @@ router.post('/signup', async (req, res) => {
 
     // Validate input
     if (!name || !email || !password) {
+      console.log('Missing required fields:', { name: !!name, email: !!email, password: !!password });
       return res.status(400).json({ 
         message: 'Please provide all required fields: name, email, and password' 
       });
@@ -20,11 +21,13 @@ router.post('/signup', async (req, res) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log('Invalid email format:', email);
       return res.status(400).json({ message: 'Please provide a valid email address' });
     }
 
     // Validate password length
     if (password.length < 6) {
+      console.log('Password too short');
       return res.status(400).json({ 
         message: 'Password must be at least 6 characters long' 
       });
@@ -33,9 +36,11 @@ router.post('/signup', async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
+      console.log('User already exists:', email);
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
+    console.log('Creating new user...');
     // Create new user
     const user = await User.create({
       name,
@@ -58,6 +63,8 @@ router.post('/signup', async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    console.log('Token generated successfully');
+
     return res.status(201).json({
       message: 'User created successfully',
       token,
@@ -68,7 +75,17 @@ router.post('/signup', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Signup error:', error);
+    console.error('Signup error:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      details: error.errors?.map(e => ({
+        type: e.type,
+        path: e.path,
+        value: e.value,
+        message: e.message
+      }))
+    });
     
     if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({ 

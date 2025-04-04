@@ -10,7 +10,7 @@ dotenv.config();
 
 // Configure CORS - Moving this to the top before any routes
 app.use(cors({
-  origin: true, // Allow all origins
+  origin: ['https://password-manager-f6zlg7wvo-jaikanths-projects-446ace2d.vercel.app', 'http://localhost:5173'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
