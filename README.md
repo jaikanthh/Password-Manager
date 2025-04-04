@@ -19,9 +19,9 @@ A secure and modern password manager built with React and Node.js, featuring a b
 
 Here's a sneak peek of the Password Manager interface:
 
-![Password Manager Preview 1](docs/Screenshot 2025-04-04 at 7.05.47 PM.png)
+![S1](Docs/Screenshot 2025-04-04 at 7.05.47 PM.png)
 
-![Password Manager Preview 2](docs/Screenshot 2025-04-04 at 7.11.14 PM.png)
+![S2](Docs/Screenshot 2025-04-04 at 7.11.14 PM.png)
 
 
 ## Prerequisites
