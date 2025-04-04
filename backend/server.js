@@ -7,6 +7,14 @@ const cors = require('cors');
 
 dotenv.config();
 
+// Configure CORS - Moving this to the top before any routes
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://password-manager-frontend.vercel.app', 'https://password-manager-git-main-jaikanthh.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 let server;
 
 // Test connection and sync models
@@ -113,12 +121,4 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Initialize database and start server
-initializeDatabase();
-
-// Configure CORS
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://password-manager-frontend.vercel.app', 'https://password-manager-git-main-jaikanthh.vercel.app']
-    : 'http://localhost:5173',
-  credentials: true
-})); 
+initializeDatabase(); 
