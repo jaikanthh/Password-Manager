@@ -96,7 +96,27 @@ const Footer = () => {
             maxWidth: '100%',
           }}
         >
-          Built and Developed by Jayakanth Kamisetti ©2025
+          Built and Developed by{' '}
+          <Link
+            href="https://jaikanthh.github.io/portfolio-website/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              color: theme.palette.mode === 'dark'
+                ? 'rgba(255, 255, 255, 0.9)'
+                : 'rgba(0, 0, 0, 0.8)',
+              textDecoration: 'none',
+              '&:hover': {
+                color: theme.palette.mode === 'dark'
+                  ? '#fff'
+                  : '#000',
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            Jayakanth Kamisetti
+          </Link>{' '}
+          ©2025
         </Typography>
       </Box>
     </Box>
