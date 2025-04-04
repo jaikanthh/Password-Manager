@@ -15,6 +15,16 @@ A secure and modern password manager built with React and Node.js, featuring a b
 - ⚡ Fast and efficient performance
 - 🔒 JWT authentication
 
+## Preview
+
+Here's a sneak peek of the Password Manager interface:
+
+![Password Manager Preview 1](docs/Screenshot%202025-04-04%20at%207.05.47%20PM.png)
+*Login and Registration Interface*
+
+![Password Manager Preview 2](docs/Screenshot%202025-04-04%20at%207.11.14%20PM.png)
+*Password Management Dashboard*
+
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
