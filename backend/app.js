@@ -12,8 +12,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5173', // Local development
-    'https://*.vercel.app',  // Vercel preview deployments
-    'https://password-manager-*.vercel.app' // Production
+    'https://password-manager-*.vercel.app', // Vercel preview deployments
+    'https://password-manager.vercel.app' // Production
   ],
   credentials: true
 }));
