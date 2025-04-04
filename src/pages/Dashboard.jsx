@@ -83,7 +83,7 @@ const Dashboard = () => {
   const fetchPasswords = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5001/api/passwords', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/passwords`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPasswords(response.data);
@@ -136,13 +136,13 @@ const Dashboard = () => {
           return;
         }
         await axios.put(
-          `http://localhost:5001/api/passwords/${editingPassword.id}`,
+          `${import.meta.env.VITE_API_URL}/api/passwords/${editingPassword.id}`,
           formData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         toast.success('Password updated successfully', toastConfig);
       } else {
-        await axios.post('http://localhost:5001/api/passwords', formData, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/passwords`, formData, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success('Password added successfully', toastConfig);
@@ -162,7 +162,7 @@ const Dashboard = () => {
     }
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5001/api/passwords/${id}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/passwords/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success('Password deleted successfully', toastConfig);
@@ -216,7 +216,7 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       await Promise.all(
         selectedPasswords.map(id =>
-          axios.delete(`http://localhost:5001/api/passwords/${id}`, {
+          axios.delete(`${import.meta.env.VITE_API_URL}/api/passwords/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         )

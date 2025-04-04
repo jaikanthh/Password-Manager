@@ -28,7 +28,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5001/api/users/profile', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFormData(prevState => ({
@@ -88,7 +88,7 @@ const Profile = () => {
         }),
       };
 
-      await axios.put('http://localhost:5001/api/users/profile', updateData, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/users/profile`, updateData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
