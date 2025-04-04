@@ -115,9 +115,10 @@ process.on('unhandledRejection', (error) => {
 // Initialize database and start server
 initializeDatabase();
 
+// Configure CORS
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.vercel.app']
+    ? ['https://password-manager-frontend.vercel.app', 'https://password-manager-git-main-jaikanthh.vercel.app']
     : 'http://localhost:5173',
   credentials: true
 })); 
