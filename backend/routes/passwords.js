@@ -12,9 +12,10 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    req.user_id = decoded.userId;
+    req.userId = decoded.userId;
     next();
   } catch (error) {
+    console.error('Auth error:', error);
     res.status(401).json({ message: 'Token is not valid' });
   }
 };
@@ -23,7 +24,7 @@ const auth = async (req, res, next) => {
 router.get('/', auth, async (req, res) => {
   try {
     const passwords = await Password.findAll({
-      where: { user_id: req.user_id }
+      where: { userId: req.userId }
     });
     res.json(passwords);
   } catch (error) {
@@ -37,6 +38,13 @@ router.post('/', auth, async (req, res) => {
   try {
     const { title, username, password, url } = req.body;
     
+    // Validate required fields
+    if (!title || !username || !password) {
+      return res.status(400).json({ 
+        message: 'Title, username, and password are required fields' 
+      });
+    }
+    
     // Add http:// prefix if url is provided but doesn't have a protocol
     let processedUrl = url;
     if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
@@ -48,7 +56,7 @@ router.post('/', auth, async (req, res) => {
       username,
       password,
       url: processedUrl,
-      userId: req.user_id // Changed from user_id to userId to match model
+      userId: req.userId
     });
 
     res.status(201).json(newPassword);
@@ -78,12 +86,20 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     const { title, username, password, url } = req.body;
+    
+    // Validate required fields
+    if (!title || !username || !password) {
+      return res.status(400).json({ 
+        message: 'Title, username, and password are required fields' 
+      });
+    }
+
     const [updated] = await Password.update(
       { title, username, password, url },
       {
         where: {
           id: id,
-          user_id: req.user_id
+          userId: req.userId
         }
       }
     );
@@ -110,7 +126,7 @@ router.delete('/:id', auth, async (req, res) => {
     const deleted = await Password.destroy({
       where: {
         id: id,
-        user_id: req.user_id
+        userId: req.userId
       }
     });
     if (deleted) {
