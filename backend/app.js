@@ -22,6 +22,20 @@ app.use((req, res, next) => {
   next();
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    message: 'Password Manager API is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      passwords: '/api/passwords',
+      users: '/api/users'
+    }
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/passwords', passwordRoutes);

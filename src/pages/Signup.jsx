@@ -53,7 +53,9 @@ const Signup = () => {
         password: formData.password,
       }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Origin': window.location.origin
         }
       });
 

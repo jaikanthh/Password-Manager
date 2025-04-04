@@ -4,28 +4,22 @@ const app = require('./app');
 const User = require('./models/User');
 const Password = require('./models/Password');
 const cors = require('cors');
+const express = require('express');
 
 dotenv.config();
 
 // Configure CORS - Moving this to the top before any routes
 app.use(cors({
-  origin: function(origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'https://password-manager-f6zlg7wvo-jaikanths-projects-446ace2d.vercel.app',
-      'https://password-manager-frontend.vercel.app',
-      'https://password-manager-git-main-jaikanthh.vercel.app'
-    ];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600 // Cache preflight request for 10 minutes
 }));
+
+// Add OPTIONS handling for preflight requests
+app.options('*', cors());
 
 let server;
 
