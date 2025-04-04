@@ -1,29 +1,22 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(
-  process.env.MYSQLDATABASE || 'railway',
-  process.env.MYSQLUSER || 'root',
-  process.env.MYSQLPASSWORD,
-  {
-    host: process.env.MYSQLHOST || 'mysql.railway.internal',
-    port: process.env.MYSQLPORT || 3306,
-    dialect: 'mysql',
-    logging: false,
-    dialectOptions: {
-      connectTimeout: 60000,
-      ssl: process.env.NODE_ENV === 'production' ? {
-        rejectUnauthorized: false
-      } : false
-    },
-    pool: {
-      max: 10,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    }
+const sequelize = new Sequelize(process.env.MYSQL_URL || process.env.DATABASE_URL, {
+  dialect: 'mysql',
+  logging: false,
+  dialectOptions: {
+    ssl: process.env.NODE_ENV === 'production' ? {
+      rejectUnauthorized: false
+    } : false,
+    connectTimeout: 60000
+  },
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
   }
-);
+});
 
 // Test connection function
 const testConnection = async () => {
