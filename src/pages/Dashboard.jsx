@@ -32,7 +32,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import api from '../utils/api';
 
 // Custom toast configuration
 const toastConfig = {
@@ -82,10 +82,7 @@ const Dashboard = () => {
 
   const fetchPasswords = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/passwords`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.get('/api/passwords');
       setPasswords(response.data);
     } catch (error) {
       toast.error('Failed to fetch passwords', toastConfig);
@@ -129,22 +126,15 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
       if (editingPassword) {
         if (!editingPassword.id) {
           toast.error('Invalid password ID', toastConfig);
           return;
         }
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/passwords/${editingPassword.id}`,
-          formData,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await api.put(`/api/passwords/${editingPassword.id}`, formData);
         toast.success('Password updated successfully', toastConfig);
       } else {
-        await axios.post(`${import.meta.env.VITE_API_URL}/api/passwords`, formData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.post('/api/passwords', formData);
         toast.success('Password added successfully', toastConfig);
       }
       handleClose();
@@ -161,10 +151,7 @@ const Dashboard = () => {
       return;
     }
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/passwords/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/api/passwords/${id}`);
       toast.success('Password deleted successfully', toastConfig);
       fetchPasswords();
     } catch (error) {
@@ -213,13 +200,8 @@ const Dashboard = () => {
 
   const handleDeleteSelected = async () => {
     try {
-      const token = localStorage.getItem('token');
       await Promise.all(
-        selectedPasswords.map(id =>
-          axios.delete(`${import.meta.env.VITE_API_URL}/api/passwords/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        )
+        selectedPasswords.map(id => api.delete(`/api/passwords/${id}`))
       );
       toast.success('Selected passwords deleted successfully', toastConfig);
       setSelectedPasswords([]);

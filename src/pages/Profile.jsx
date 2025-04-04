@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import api from '../utils/api';
 import { useTheme } from '@mui/material/styles';
 
 const Profile = () => {
@@ -27,18 +27,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await api.get('/api/users/profile');
         setFormData(prevState => ({
           ...prevState,
           name: response.data.name,
           email: response.data.email
         }));
       } catch (error) {
-        toast.error('Failed to fetch user data');
         console.error('Error fetching user data:', error);
+        toast.error('Failed to fetch user data');
       } finally {
         setLoadingUserData(false);
       }
@@ -78,32 +75,12 @@ const Profile = () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const updateData = {
-        name: formData.name,
-        email: formData.email,
-        ...(formData.currentPassword && {
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword,
-        }),
-      };
-
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/users/profile`, updateData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
+      await api.put('/api/users/profile', formData);
       toast.success('Profile updated successfully');
-      
-      // Clear password fields after successful update
-      setFormData(prev => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
-      }));
+      fetchUserData();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update profile');
       console.error('Error updating profile:', error);
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
