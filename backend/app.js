@@ -7,6 +7,19 @@ const userRoutes = require('./routes/users');
 
 const app = express();
 
+// Configure CORS - Must be before any routes
+app.use(cors({
+  origin: ['https://password-manager-f6zlg7wvo-jaikanths-projects-446ace2d.vercel.app', 'http://localhost:5173'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600 // Cache preflight request for 10 minutes
+}));
+
+// Handle OPTIONS preflight requests
+app.options('*', cors());
+
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
