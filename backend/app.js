@@ -19,7 +19,8 @@ const corsOptions = {
     // Check if the origin matches our allowed patterns
     const allowedOrigins = [
       'http://localhost:5173',
-      'https://password-manager-six-psi.vercel.app'
+      'https://password-manager-six-psi.vercel.app',
+      'https://cipherrsafee.vercel.app'
     ];
     
     const isAllowed = allowedOrigins.some(allowed => {
