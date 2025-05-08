@@ -98,7 +98,7 @@ const Footer = () => {
         >
           Built and Developed by{' '}
           <Link
-            href="https://jaikanthh.github.io/portfolio-website/"
+            href="https://jayakanthkamisetti.com"
             target="_blank"
             rel="noopener noreferrer"
             sx={{
