@@ -18,6 +18,7 @@ const corsOptions = {
       'http://localhost:5173',
       'https://password-manager-six-psi.vercel.app',
       'https://cipherrsafee.vercel.app',
+      'https://ciphersafee.vercel.app',
       'https://*.vercel.app' // Allow Vercel preview deployments
     ];
     
