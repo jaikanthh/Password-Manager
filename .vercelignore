@@ -34,7 +34,4 @@ yarn-error.log*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db
-
-# Backend files (not needed for frontend build)
-backend/ 
+Thumbs.db 
