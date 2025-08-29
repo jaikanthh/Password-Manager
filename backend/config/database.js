@@ -1,14 +1,14 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize(process.env.MYSQL_URL || process.env.DATABASE_URL, {
-  dialect: 'mysql',
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
   logging: false,
   dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? {
+    ssl: {
+      require: true,
       rejectUnauthorized: false
-    } : false,
-    connectTimeout: 60000
+    }
   },
   pool: {
     max: 10,
@@ -26,12 +26,14 @@ const testConnection = async () => {
     return true;
   } catch (error) {
     console.error('Unable to connect to the database:', error.message);
+    console.error('Connection details:', {
+      host: sequelize.config.host,
+      port: sequelize.config.port,
+      database: sequelize.config.database,
+      username: sequelize.config.username
+    });
     return false;
   }
 };
 
-// Export both sequelize instance and test function
-module.exports = {
-  sequelize,
-  testConnection
-}; 
+module.exports = { sequelize, testConnection }; 
