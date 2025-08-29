@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "functions": {
+    "api/index.js": {
+      "includeFiles": ["backend/**"]
+    }
+  },
   "routes": [
     { "src": "/api/ping", "dest": "/api/ping.js" },
     { "src": "/api/(.*)", "dest": "/api/index.js" }
