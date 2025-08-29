@@ -54,7 +54,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Root route
-app.get('/', (req, res) => {
+app.get(['/', '/api'], (req, res) => {
   res.json({
     status: 'online',
     message: 'Password Manager API is running on Vercel',
@@ -72,9 +72,10 @@ const authRoutes = require('../backend/routes/auth');
 const passwordRoutes = require('../backend/routes/passwords');
 const userRoutes = require('../backend/routes/users');
 
-app.use('/auth', authRoutes);
-app.use('/passwords', passwordRoutes);
-app.use('/users', userRoutes);
+// Mount under /api/* to match Vercel rewrite
+app.use('/api/auth', authRoutes);
+app.use('/api/passwords', passwordRoutes);
+app.use('/api/users', userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
