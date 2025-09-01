@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Initialize database connection
+const { testConnection } = require('../backend/config/database');
+
 const app = express();
 
 // CORS configuration for production
@@ -86,5 +89,18 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Test database connection before starting the server
+testConnection()
+  .then(connected => {
+    if (!connected) {
+      console.error('Failed to connect to database. API may not function correctly.');
+    } else {
+      console.log('Database connection successful. API ready to handle requests.');
+    }
+  })
+  .catch(err => {
+    console.error('Error testing database connection:', err);
+  });
+
 // Export for Vercel
-module.exports = app; 
+module.exports = app;

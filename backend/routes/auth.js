@@ -84,7 +84,19 @@ router.post('/signup', async (req, res) => {
         path: e.path,
         value: e.value,
         message: e.message
-      }))
+      })),
+      sequelizeError: error.original ? {
+        code: error.original.code,
+        detail: error.original.detail,
+        table: error.original.table,
+        constraint: error.original.constraint
+      } : undefined
+    });
+    
+    // Log database connection details
+    console.error('Database connection details:', {
+      DATABASE_URL: process.env.DATABASE_URL ? 'Set (value hidden)' : 'Not set',
+      NODE_ENV: process.env.NODE_ENV
     });
     
     if (error.name === 'SequelizeValidationError') {
@@ -140,4 +152,4 @@ router.post('/login', async (req, res) => {
   }
 });
 
-module.exports = router; 
+module.exports = router;
