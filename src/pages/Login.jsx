@@ -33,7 +33,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/login`, formData);
+      // Remove the duplicate /api prefix since it's already included in the Vercel routing
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const endpoint = apiUrl.endsWith('/api') ? '/auth/login' : '/api/auth/login';
+      const response = await axios.post(`${apiUrl}${endpoint}`, formData);
       localStorage.setItem('token', response.data.token);
       toast.success('Login successful!');
       navigate('/dashboard');
@@ -299,4 +302,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;

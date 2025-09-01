@@ -47,7 +47,10 @@ const Signup = () => {
         password: formData.password ? '***' : undefined
       });
       
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
+      // Remove the duplicate /api prefix since it's already included in the Vercel routing
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const endpoint = apiUrl.endsWith('/api') ? '/auth/signup' : '/api/auth/signup';
+      const response = await axios.post(`${apiUrl}${endpoint}`, {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -507,4 +510,4 @@ const Signup = () => {
   );
 };
 
-export default Signup; 
+export default Signup;
