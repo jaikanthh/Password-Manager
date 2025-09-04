@@ -34,7 +34,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findByEmail(email);
     if (existingUser) {
       console.log('User already exists:', email);
       return res.status(400).json({ message: 'User already exists with this email' });
@@ -45,9 +45,7 @@ router.post('/signup', async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password,
-      status: 'active',
-      lastLogin: new Date()
+      password
     });
 
     console.log('User created successfully:', {
@@ -119,7 +117,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findByEmail(email);
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }

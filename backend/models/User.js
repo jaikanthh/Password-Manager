@@ -1,74 +1,84 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const { pool } = require('../config/database');
 const bcrypt = require('bcryptjs');
 
-const User = sequelize.define('users', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [2, 50],
-      notEmpty: true
-    }
-  },
-  email: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true,
-      notEmpty: true
-    }
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [6, 100],
-      notEmpty: true
-    }
-  },
-  lastLogin: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  status: {
-    type: DataTypes.ENUM('active', 'inactive'),
-    defaultValue: 'active'
+class User {
+  constructor(data) {
+    this.id = data.id;
+    this.name = data.name;
+    this.email = data.email;
+    this.password = data.password;
+    this.last_login = data.last_login;
+    this.status = data.status || 'active';
+    this.created_at = data.created_at;
+    this.updated_at = data.updated_at;
   }
-}, {
-  timestamps: true,
-  underscored: true,
-  hooks: {
-    beforeCreate: async (user) => {
-      if (user.password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    },
-    beforeUpdate: async (user) => {
-      if (user.changed('password')) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
-      }
-    }
+
+  // Create user
+  static async create(userData) {
+    const { name, email, password } = userData;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    const result = await pool.query(
+      'INSERT INTO users (name, email, password, status, created_at, updated_at) VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING *',
+      [name, email, hashedPassword, 'active']
+    );
+    
+    return new User(result.rows[0]);
   }
-});
 
-// Instance method to check password
-User.prototype.isValidPassword = async function(password) {
-  return await bcrypt.compare(password, this.password);
-};
+  // Find user by email
+  static async findByEmail(email) {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      [email]
+    );
+    
+    return result.rows.length > 0 ? new User(result.rows[0]) : null;
+  }
 
-// Update last login
-User.prototype.updateLastLogin = async function() {
-  this.lastLogin = new Date();
-  await this.save();
-};
+  // Find user by ID
+  static async findById(id) {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE id = $1 LIMIT 1',
+      [id]
+    );
+    
+    return result.rows.length > 0 ? new User(result.rows[0]) : null;
+  }
 
-module.exports = User; 
+  // Check password
+  async isValidPassword(password) {
+    return await bcrypt.compare(password, this.password);
+  }
+
+  // Update last login
+  async updateLastLogin() {
+    await pool.query(
+      'UPDATE users SET last_login = NOW(), updated_at = NOW() WHERE id = $1',
+      [this.id]
+    );
+    this.last_login = new Date();
+  }
+
+  // Create users table
+  static async createTable() {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        last_login TIMESTAMP,
+        status VARCHAR(50) DEFAULT 'active',
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    
+    // Create indexes
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)');
+  }
+}
+
+module.exports = User;

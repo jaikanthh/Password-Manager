@@ -1,77 +1,103 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/database');
+const { pool } = require('../config/database');
 
-const Password = sequelize.define('passwords', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      len: [1, 100],
-      notEmpty: true
-    }
-  },
-  username: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
-  },
-  url: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isUrl: {
-        msg: 'Please enter a valid URL'
-      }
-    }
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    field: 'user_id',
-    references: {
-      model: 'users',
-      key: 'id'
-    }
-  },
-  lastUsed: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  notes: {
-    type: DataTypes.TEXT,
-    allowNull: true
+class Password {
+  constructor(data) {
+    this.id = data.id;
+    this.title = data.title;
+    this.username = data.username;
+    this.password = data.password;
+    this.url = data.url;
+    this.user_id = data.user_id;
+    this.last_used = data.last_used;
+    this.notes = data.notes;
+    this.created_at = data.created_at;
+    this.updated_at = data.updated_at;
   }
-}, {
-  timestamps: true,
-  underscored: true,
-  indexes: [
-    {
-      fields: ['user_id']
-    },
-    {
-      fields: ['title']
-    }
-  ]
-});
 
-// Instance method to update last used timestamp
-Password.prototype.updateLastUsed = async function() {
-  this.lastUsed = new Date();
-  await this.save();
-};
+  // Create password
+  static async create(passwordData) {
+    const { title, username, password, url, user_id, notes } = passwordData;
+    
+    const result = await pool.query(
+      'INSERT INTO passwords (title, username, password, url, user_id, notes, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) RETURNING *',
+      [title, username, password, url || null, user_id, notes || null]
+    );
+    
+    return new Password(result.rows[0]);
+  }
 
-module.exports = Password; 
+  // Find passwords by user ID
+  static async findByUserId(userId) {
+    const result = await pool.query(
+      'SELECT * FROM passwords WHERE user_id = $1 ORDER BY created_at DESC',
+      [userId]
+    );
+    
+    return result.rows.map(row => new Password(row));
+  }
+
+  // Find password by ID and user ID
+  static async findByIdAndUserId(id, userId) {
+    const result = await pool.query(
+      'SELECT * FROM passwords WHERE id = $1 AND user_id = $2 LIMIT 1',
+      [id, userId]
+    );
+    
+    return result.rows.length > 0 ? new Password(result.rows[0]) : null;
+  }
+
+  // Update password
+  static async updateById(id, userId, updateData) {
+    const { title, username, password, url, notes } = updateData;
+    
+    const result = await pool.query(
+      'UPDATE passwords SET title = $1, username = $2, password = $3, url = $4, notes = $5, updated_at = NOW() WHERE id = $6 AND user_id = $7 RETURNING *',
+      [title, username, password, url || null, notes || null, id, userId]
+    );
+    
+    return result.rows.length > 0 ? new Password(result.rows[0]) : null;
+  }
+
+  // Delete password
+  static async deleteById(id, userId) {
+    const result = await pool.query(
+      'DELETE FROM passwords WHERE id = $1 AND user_id = $2 RETURNING *',
+      [id, userId]
+    );
+    
+    return result.rows.length > 0;
+  }
+
+  // Update last used
+  async updateLastUsed() {
+    await pool.query(
+      'UPDATE passwords SET last_used = NOW(), updated_at = NOW() WHERE id = $1',
+      [this.id]
+    );
+    this.last_used = new Date();
+  }
+
+  // Create passwords table
+  static async createTable() {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS passwords (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(100) NOT NULL,
+        username VARCHAR(255) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        url VARCHAR(500),
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        last_used TIMESTAMP,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    
+    // Create indexes
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_passwords_user_id ON passwords(user_id)');
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_passwords_title ON passwords(title)');
+  }
+}
+
+module.exports = Password;

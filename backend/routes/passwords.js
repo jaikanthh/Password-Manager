@@ -23,9 +23,7 @@ const auth = async (req, res, next) => {
 // Get all passwords for a user
 router.get('/', auth, async (req, res) => {
   try {
-    const passwords = await Password.findAll({
-      where: { userId: req.userId }
-    });
+    const passwords = await Password.findByUserId(req.userId);
     res.json(passwords);
   } catch (error) {
     console.error('Error fetching passwords:', error);
@@ -56,17 +54,18 @@ router.post('/', auth, async (req, res) => {
       username,
       password,
       url: processedUrl,
-      userId: req.userId
+      user_id: req.userId
     });
 
     res.status(201).json(newPassword);
   } catch (error) {
     console.error('Error creating password:', error);
     
-    if (error.name === 'SequelizeValidationError') {
+    // Handle validation errors
+    if (error.message.includes('validation') || error.message.includes('constraint')) {
       return res.status(400).json({ 
         message: 'Validation error', 
-        errors: error.errors.map(e => e.message)
+        error: error.message
       });
     }
     
@@ -94,17 +93,14 @@ router.put('/:id', auth, async (req, res) => {
       });
     }
 
-    const [updated] = await Password.update(
-      { title, username, password, url },
-      {
-        where: {
-          id: id,
-          userId: req.userId
-        }
-      }
-    );
-    if (updated) {
-      const updatedPassword = await Password.findByPk(id);
+    const updatedPassword = await Password.updateById(id, req.userId, {
+      title, 
+      username, 
+      password, 
+      url
+    });
+    
+    if (updatedPassword) {
       res.json(updatedPassword);
     } else {
       res.status(404).json({ message: 'Password not found' });
@@ -123,12 +119,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(400).json({ message: 'Invalid password ID' });
     }
 
-    const deleted = await Password.destroy({
-      where: {
-        id: id,
-        userId: req.userId
-      }
-    });
+    const deleted = await Password.deleteById(id, req.userId);
     if (deleted) {
       res.json({ message: 'Password deleted successfully' });
     } else {
@@ -140,4 +131,4 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-module.exports = router; 
+module.exports = router;

@@ -80,6 +80,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// Simple ping endpoint for testing
+app.get('/api/ping', (req, res) => {
+  res.json({
+    status: 'success',
+    message: 'Backend API is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/passwords', passwordRoutes);
@@ -94,4 +103,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app; 
+module.exports = app;

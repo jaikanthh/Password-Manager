@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const { sequelize, testConnection } = require('./config/database');
+const { testConnection } = require('./config/database');
 const app = require('./app');
 const User = require('./models/User');
 const Password = require('./models/Password');
@@ -8,7 +8,7 @@ dotenv.config();
 
 let server;
 
-// Test connection and sync models
+// Test connection and create tables
 async function initializeDatabase() {
   try {
     // Test database connection
@@ -18,28 +18,14 @@ async function initializeDatabase() {
       process.exit(1);
     }
 
-    // First sync the models without associations
-    await sequelize.sync({ force: false });
-    console.log('Initial database sync completed');
-
-    // Then set up associations
-    User.hasMany(Password, { 
-      foreignKey: {
-        name: 'userId',
-        allowNull: false
-      },
-      onDelete: 'CASCADE'
-    });
-    Password.belongsTo(User, { 
-      foreignKey: {
-        name: 'userId',
-        allowNull: false
-      }
-    });
+    // Create tables
+    await User.createTable();
+    console.log('Users table created/verified');
     
-    // Sync again to update associations
-    await sequelize.sync({ alter: true });
-    console.log('Database associations synced successfully');
+    await Password.createTable();
+    console.log('Passwords table created/verified');
+    
+    console.log('Database initialization completed successfully');
     
     // Start server after database is ready
     startServer();
@@ -112,4 +98,4 @@ process.on('unhandledRejection', (error) => {
 });
 
 // Initialize database and start server
-initializeDatabase(); 
+initializeDatabase();
